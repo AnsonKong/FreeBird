@@ -1,0 +1,53 @@
+{
+  "name": "free-bird",
+  "version": "1.0.0",
+  "description": "A place to express the deep down self",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cross-env NODE_ENV=production port=3000 proxy=false node index.js",
+    "pm2start": "cross-env NODE_ENV=production port=3000 proxy=false pm2 start index.js -i max --name=freebird",
+    "pm2stop": "pm2 stop freebird",
+    "pm2delete": "pm2 delete freebird",
+    "dev": "cross-env NODE_ENV=development node index.js",
+    "build": "npm run build:server && npm run build:client",
+    "build:server": "cross-env NODE_ENV=production webpack --config build/webpack.server.config.js",
+    "build:client": "cross-env NODE_ENV=production webpack --config build/webpack.client.config.js"
+  },
+  "author": "AnsonKong",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cross-env": "^5.1.6",
+    "koa": "^2.5.1",
+    "koa-body": "^4.0.1",
+    "koa-logger": "^3.2.0",
+    "koa-mount": "^3.0.0",
+    "koa-router": "^7.4.0",
+    "koa-static": "^4.0.3",
+    "moment": "^2.22.2",
+    "mongodb": "^3.0.10",
+    "vue": "^2.5.16",
+    "vue-server-renderer": "^2.5.16"
+  },
+  "devDependencies": {
+    "css-loader": "^0.28.11",
+    "lodash.throttle": "^4.1.1",
+    "memory-fs": "^0.4.1",
+    "normalize.css": "^8.0.0",
+    "pug": "^2.0.3",
+    "pug-plain-loader": "^1.0.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "vue-loader": "^15.2.4",
+    "vue-router": "^3.0.1",
+    "vue-style-loader": "^4.1.0",
+    "vue-template-compiler": "^2.5.16",
+    "vuex": "^3.0.1",
+    "vuex-router-sync": "^5.0.0",
+    "webpack": "^4.11.1",
+    "webpack-cli": "^3.0.3",
+    "webpack-merge": "^4.1.2",
+    "webpack-node-externals": "^1.7.2"
+  }
+}
