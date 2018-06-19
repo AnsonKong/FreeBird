@@ -1,9 +1,11 @@
 # FreeBird
-[FreeBird](https://fb.anodejsfun.top/) is a Progressive Web App for sharing your thoughts
-Offline support & installable
+[FreeBird](https://fb.anodejsfun.top/) is a Message Board PWA!
 
-TODO:
-Notifications & Push feature
+* Offline support
+* Installable
+* Push Notifications when github logined (Only available in desktop FireFox right now)
+* Dropdown Refresh
+* Comment Module
 
 ## QuickStart
 You should setup configs below by yourself:
@@ -16,6 +18,10 @@ Both configs are for github login usage, one for dev, and another for prod.
 #### Home:
 
 ![Home](./screenshots/home.jpg?raw=true "Home")
+
+#### Read-Article:
+
+![Read-Article](./screenshots/read-article.jpg?raw=true "Read-Article")
 
 #### Add to Home Screen:
 
