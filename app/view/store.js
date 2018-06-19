@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export function createStore () {
   return new Vuex.Store({
     state: {
-      user: null
+      user: null,
+      navHeaderHeight: 80
     },
     actions: {
       updateUser (state, user) {

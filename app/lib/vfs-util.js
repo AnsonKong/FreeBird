@@ -1,7 +1,7 @@
 'use strict'
 
 const path = require('path')
-const GlobalReg = require('./GlobalReg')
+const GlobalReg = require('./global-reg')
 
 /**
  * extract files from Virtual FileSystem

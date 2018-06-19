@@ -1,14 +1,14 @@
 <template lang="pug">
   div.container
     nav-menu.head
-    textarea.area(placeholder="How do you feel today?" rows="10" ref="myInput")
+    textarea.area(placeholder="How do you feel today?" rows="10" ref="myInput" v-model="currentValue")
     div.tip(v-if="!user") you're not logined, your message will be sent anonymously.
     div.btn-container
-      router-link.c-btn.c-btn--small.c-btn--white.c-btn--round.c-btn--narrow.send-btn(to="/") Back
-      div.c-btn.c-btn--small.c-btn--white.c-btn--round.c-btn--narrow.send-btn(@click="onSend") Send
+      div.c-btn.c-btn--small.c-btn--white.c-btn--round.c-btn--narrow.send-btn(:class="[currentValue ? null : 'c-btn--disabled']" @click="onSend") Send
 </template>
 
 <style lang="stylus" scoped>
+@import '../style/systems.styl'
 
 .tip
   padding 5px
@@ -22,6 +22,9 @@
   width 100%
   box-sizing border-box
   padding 5px
+
+.area:focus
+  border-color $theme-color
 
 .btn-container
   float right
@@ -40,39 +43,32 @@ export default {
   components: {
     'nav-menu': NavMenu
   },
-  mounted () {
-    // console.log('write mounted')
-  },
-  activated () {
-    // console.log('write activated')
-  },
-  deactivated () {
-    // console.log('write deactivated')
+  data () {
+    return {
+      currentValue: ''
+    }
   },
   computed: {
     user () {
       return this.$store.state.user
     }
   },
+  activated () {
+    this.$refs['myInput'].focus()
+  },
   methods: {
-    async onSend () {
-      const content = this.$refs['myInput'].value
-      if (!content) {
-        this.toast('please write something')
+    onSend () {
+      if (!this.currentValue) {
         return
       }
-      axios.post('/articles', {
-        content,
+      axios.post('/api/articles', {
+        content: this.currentValue,
         userAgent: navigator.userAgent
       }).then(res => {
-        if (res.data.code === 0) {
-          this.$refs['myInput'].value = ''
-          this.toast('successfully sent!')
-          this.$router.push('/')
-          EventBus.$emit('refreshHome')
-        } else {
-          this.toast('send failed')
-        }
+        this.currentValue = ''
+        this.toast('successfully sent!')
+        this.$router.push('/')
+        EventBus.$emit('newArticle', res.data)
       }).catch(err => {
         this.toast('send failed, ' + err)
       })

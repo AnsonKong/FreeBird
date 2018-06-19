@@ -1,23 +1,19 @@
 <template lang="pug">
-  div
-    nav-menu.head
+  div.container
+    nav-menu.head.head-stick
     div(ref="myContainer")
-      subject(v-for="(item, index) in items", :key="index", :item="item")
+      div(ref="article-list")
+        subject(v-for="(item, index) in items", :key="item._id", :item="item")
       router-link(to="/article/create")
         div.write-btn
           i(class="iconfont icon-edit")
       div.empty-container(v-if="items.length === 0") ooh! it's empty, any thoughts?
+    refresh(@refresh="onRefresh")
+    loadmore(@loadmore="onLoadMore" @scrollChanged="onScrollChanged")
 </template>
 
 <style lang="stylus" scoped>
 $btn-width = 50px
-
-.head
-  position sticky
-  left 0
-  right 0
-  top 0
-  z-index 1
 
 .empty-container
   text-align center
@@ -45,14 +41,18 @@ $btn-width = 50px
 <script>
 import NavMenu from '../component/NavMenu.vue'
 import Subject from '../component/Subject.vue'
+import ScrollBottomLoadMore from '../component/ScrollBottomLoadMore.vue'
+import ScrollTopRefresh from '../component/ScrollTopRefresh.vue'
+import { TweenLite } from "gsap/umd/TweenMax"
 import { EventBus } from '../event-bus.js'
 import axios from 'axios'
-const throttle = require('lodash.throttle')
 
 export default {
   components: {
     'nav-menu': NavMenu,
-    'subject': Subject
+    'subject': Subject,
+    'loadmore': ScrollBottomLoadMore,
+    'refresh': ScrollTopRefresh
   },
   computed: {
     user () {
@@ -60,33 +60,26 @@ export default {
     }
   },
   methods: {
-    onScroll () {
-      const scrollDown = window.scrollY > this.lastScrollY
-      this.lastScrollY = window.scrollY
-      if (!scrollDown) {
-        return
-      }
-      const rect = this.$refs['myContainer'].getBoundingClientRect()
-      if (rect.top - this.loadmoreTriggerDistance <= window.innerHeight - rect.height) {
-        this.loadData()
-      }
-    },
     loadData () {
       if (this.loading) {
         this.toast('loading more data, please wait.')
         return
       }
       this.loading = true
-      axios.get('/articles', {
+      axios.get('/api/articles', {
         params: {
-          start: this.start,
+          since: this.since,
           count: this.count
         }
       }).then(res => {
         const newData = res.data
         if (newData.length) {
-          this.start += this.count
+          if (this.items.length === 0) {
+            TweenLite.fromTo(this.$refs['article-list'], 1, { opacity: 0 }, { opacity: 1 })
+          }
           this.items = this.items.concat(res.data)
+          // get last item's time
+          this.since = this.items[this.items.length - 1].time
         } else {
           this.toast('no more data.')
         }
@@ -96,40 +89,44 @@ export default {
         this.loading = false
       })
     },
-    reset () {
-      this.start = 0
+    onRefresh () {
+      this.toast('refresh successfully!')
+      this._clear()
+      this.loadData()
+    },
+    _clear () {
+      this.since = null
       this.items.length = 0
       this.lastScrollY = 0
     },
-    onRefresh () {
-      this.reset()
+    onNewArticle (doc) {
+      this.lastScrollY = 0
+      this.items.unshift(doc)
+      this.$nextTick(function () {
+        const f = this.$refs['article-list'].firstChild
+        TweenLite.fromTo(f, .5, { opacity: 0 }, { opacity: 1 })
+      })
+    },
+    onLoadMore () {
       this.loadData()
+    },
+    onScrollChanged (value) {
+      this.lastScrollY = value
     }
   },
   mounted () {
-    // console.log('home mounted')
     this.loadData()
-    EventBus.$on('refreshHome', this.onRefresh)
+    EventBus.$on('newArticle', this.onNewArticle)
   },
   activated () {
-    // console.log('home activated')
-    this.throttleWrapper = throttle(this.onScroll, 200)
-    window.addEventListener('scroll', this.throttleWrapper)
     window.scrollTo(0, this.lastScrollY)
-  },
-  deactivated () {
-    // console.log('home deactivated')
-    window.removeEventListener('scroll', this.throttleWrapper)
-    this.throttleWrapper = null
   },
   data () {
     return {
-      start: 0,
+      since: null,
       count: 10,
       items: [],
-      throttleWrapper: null,
       lastScrollY: 0,
-      loadmoreTriggerDistance: 50,
       loading: false
     }
   }

@@ -1,36 +1,51 @@
 <template lang="pug">
-  div.container
-    div.avatar-container(:style="{'background-image': item.avatar ? `url(${item.avatar})` : null}")
-      i(v-if="!item.avatar" class="iconfont icon-user")
+  div.container(@click="onRead($event)")
+    avatar.my-avatar(:avatar-url="item.avatar ? item.avatar : null" bg-color="#eee" icon-color="#aaa" :round="false" avatar-width="40px")
     div.info-container
       div.top-container
         span.author {{item.author}}
         span.time {{time}}
-      p.content {{item.content}}
-      div
-        i(class="iconfont icon-share" @click.stop="onShare")
-        i(class="iconfont icon-heart" @click.stop="onHeart")
+      p.content(v-html="input2Html(item.content)")
+      div.icons-container(ref="btns")
+        i(class="iconfont icon-share copy" :data-clipboard-text="shareLink")
+        heart(:item="item" api="/api/article/like")
         i(class="iconfont icon-mail" @click.stop="onComment")
+        span.comment-count {{item.comments_count}}
 </template>
 
 <style lang="stylus" scoped>
-$avatar-width = 40px
+@import '../style/systems.styl'
 
+.icons-container
+  display inline-block
+
+.comment-count
+  color #aaa
+  font-size 20px
+
+.my-avatar
+  flex-shrink 0
+  
 .iconfont
   color #aaa
   font-size 25px
+  display inline-block
 
-.icon-heart
-  margin 0 5px
+.icon-share
+  margin-right 5px
+
+.icon-mail
+  margin-left 5px
 
 .container
   box-sizing border-box
-  border-bottom solid #ddd 1px
+  border-bottom solid 1px $hr-color
   padding 15px
   display flex
 
 .info-container
   width 100%
+  margin-left 10px
 
 .top-container
   position relative
@@ -52,43 +67,40 @@ $avatar-width = 40px
   right 0
   color #ccc
 
-.avatar-container
-  width $avatar-width
-  height $avatar-width
-  background-color #eee
-  background-size cover
-  margin-right 10px
-  flex-shrink 0
-  text-align center
-  padding-top 5px
-  box-sizing border-box
-
 .icon-edit
   float right
 </style>
 
 <script>
+import Avatar from './Avatar.vue'
+import Heart from './Heart.vue'
 const moment = require('moment')
+
 export default {
+  components: {
+    'avatar': Avatar,
+    'heart': Heart
+  },
   props: ['item'],
   methods: {
-    onRead () {
-      console.log('read')
-      this.$router.push(`/article/${this.item._id}`)
+    read() {
+        this.$router.push(`/article/${this.item._id}`)
     },
-    onShare () {
-      console.log('share')
-    },
-    onHeart () {
-      console.log('heart')
+    onRead ($event) {
+      if (this.$refs['btns'].contains($event.target) === false) {
+        this.read()
+      }
     },
     onComment () {
-      console.log('comment')
+      this.read()
     }
   },
   computed: {
     time () {
       return moment(this.item.time).fromNow()
+    },
+    shareLink () {
+      return `${window.location.origin}/article/${this.item._id}`
     }
   }
 }

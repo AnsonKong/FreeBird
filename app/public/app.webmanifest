@@ -45,7 +45,7 @@
     }
   ],
   "start_url": "/",
-  "display": "fullscreen",
+  "display": "standalone",
   "theme_color": "#6FA9B3",
   "background_color": "#6FA9B3"
 }

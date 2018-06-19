@@ -14,6 +14,9 @@ export default {
   methods: {
     toast (msg) {
       EventBus.$emit('toast', msg)
+    },
+    input2Html (input) {
+      return input.replace(/\n/g, '<br>')
     }
   }
 }

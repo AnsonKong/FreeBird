@@ -1,17 +1,11 @@
 <template lang="pug">
-  div
+  div.container
     keep-alive
       router-view
     div.toast(ref="myToast" :class="[toastActive ? 'toast-active' : null]") {{toastMsg}}
 </template>
 
 <style lang="stylus" scoped>
-
-.head
-  left 0
-  right 0
-  top 0
-  z-index 1
 
 .toast
   padding 10px
@@ -24,11 +18,11 @@
   visibility hidden
   transition visibility 0.5s, opacity 0.5s
   color white
+  max-width 80%
 
 .toast-active
   opacity 1
   visibility visible
-
 </style>
 
 <style lang="stylus" src="./style/index.styl">
@@ -37,6 +31,8 @@
 <script>
 import { EventBus } from './event-bus.js'
 import NavMenu from './component/NavMenu.vue'
+import { detectNotification, unscribe } from './notification-detect'
+import ClipboardJS from 'clipboard'
 
 export default {
   components: {
@@ -44,10 +40,20 @@ export default {
   },
   mounted () {
     EventBus.$on('toast', this.onToast)
+    this._initClipboard()
+    if (this.user) {
+      detectNotification()
+    } else {
+      unscribe()
+    }
+  },
+  computed: {
+    user () {
+      return this.$store.state.user
+    }
   },
   methods: {
     onToast (msg) {
-      console.log("onToast:" + msg)
       this.toastMsg = msg
       this.toastActive = true
       clearTimeout(this.toastFlag)
@@ -59,6 +65,19 @@ export default {
       this.toastFlag = setTimeout(() => {
         this.toastActive = false
       }, this.toastTime)
+    },
+    _initClipboard () {
+      var clipboard = new ClipboardJS('.copy');
+      clipboard.on('success', (e) => {
+        console.info('copied to clipboard:', e.text);
+        this.toast('copied successfully!')
+      });
+
+      clipboard.on('error', function(e) {
+        this.toast('copied failed!')
+        console.error('Action:', e.action);
+        console.error('Trigger:', e.trigger);
+      });
     }
   },
   data () {

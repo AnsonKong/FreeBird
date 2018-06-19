@@ -3,6 +3,7 @@ import { detectSW } from './sw-detect'
 
 detectSW()
 
+
 const { app, router, store } = createApp()
 
 if (window.__INITIAL_STATE__) {

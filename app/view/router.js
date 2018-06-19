@@ -8,7 +8,8 @@ export function createRouter () {
     mode: 'history',
     routes: [
       { path: '/', component: () => import('./page/Home.vue') },
-      { path: '/article/create', component: () => import('./page/WriteArticle.vue') }
+      { path: '/article/create', component: () => import('./page/WriteArticle.vue') },
+      { path: '/article/:id', component: () => import('./page/ReadArticle.vue') }
     ]
   })
 }

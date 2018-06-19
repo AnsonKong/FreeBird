@@ -1,7 +1,7 @@
 'use strict'
 
 const path = require('path')
-const vfsUtil = require('../lib/VFSUtil')
+const vfsUtil = require('../lib/vfs-util')
 
 module.exports = check
 

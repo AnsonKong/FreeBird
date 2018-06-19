@@ -6,7 +6,7 @@
 
 const path = require('path')
 const { createBundleRenderer } = require('vue-server-renderer')
-const vfsUtil = require('../lib/VFSUtil')
+const vfsUtil = require('../lib/vfs-util')
 
 /**
  * Expose `render()`.
@@ -86,6 +86,7 @@ function render(app, opts) {
     const user = ctx.state.user
     const context = { url: ctx.url, user }
     await renderer.renderToString(context).then(html => {
+      ctx.type = 'text/html'
       ctx.body = html
     }).catch(err => {
       throw err

@@ -1,4 +1,4 @@
-const sessionConst = require('../lib/SessionConst')
+const sessionConst = require('../lib/session-const')
 
 module.exports = async (ctx, next) => {
   const str = ctx.cookies.get(sessionConst.sessionUserKey, { signed: true })
