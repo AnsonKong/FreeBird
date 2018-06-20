@@ -17,7 +17,15 @@ function check(opts) {
     await next()
     if (vfs && ctx.status === 404 && path.extname(ctx.path) !== '') {
       // check webpack memory file system
-      let result = vfsUtil.extract(vfs, path.resolve(__dirname, '../public/', '.' + ctx.path.replace('/public', '')))
+      let filePath = path.resolve(__dirname, '../public/', '.' + ctx.path.replace('/public', ''))
+      // try to serve gzip compression
+      if (ctx.acceptsEncodings('gzip') === 'gzip') {
+        if (vfs.existsSync(filePath + '.gz')) {
+          filePath += '.gz'
+          ctx.set('Content-Encoding', 'gzip')
+        }
+      }
+      let result = vfsUtil.extract(vfs, filePath)
       if (result) {
         ctx.body = result
       }

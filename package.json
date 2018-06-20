@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env NODE_ENV=production port=3000 proxy=false node index.js",
+    "start": "cross-env NODE_ENV=production port=3000 proxy=false node --inspect index.js",
     "pm2start": "cross-env NODE_ENV=production port=3000 proxy=false pm2 start index.js -i max --name=freebird",
     "pm2stop": "pm2 stop freebird",
     "pm2delete": "pm2 delete freebird",
@@ -22,6 +22,7 @@
     "cross-env": "^5.1.6",
     "koa": "^2.5.1",
     "koa-body": "^4.0.1",
+    "koa-compress": "^3.0.0",
     "koa-logger": "^3.2.0",
     "koa-mount": "^3.0.0",
     "koa-router": "^7.4.0",
@@ -33,6 +34,7 @@
     "web-push": "^3.3.1"
   },
   "devDependencies": {
+    "compression-webpack-plugin": "^1.1.11",
     "css-loader": "^0.28.11",
     "gsap": "^2.0.1",
     "lodash.throttle": "^4.1.1",

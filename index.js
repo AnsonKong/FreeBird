@@ -7,6 +7,7 @@ const logger = require('koa-logger')
 const body = require('koa-body')
 const ssr = require('./app/middleware/vue-ssr')
 const passport = require('./app/middleware/passport')
+const compress = require('koa-compress')
 const fs = require('fs')
 
 if (process.env.proxy) {
@@ -60,6 +61,7 @@ router.get('/vapidPublicKey', function(ctx, next) {
 router.post('/subscription/register', body(), require('./app/middleware/subscription').register)
 // setup vuessr
 router.get('*', ssrMiddleware)
+app.use(compress())
 app.use(router.routes())
 
 const port = process.env.port || 3000

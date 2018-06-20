@@ -6,7 +6,7 @@
         span.user(v-if="user") {{user.name}}, #[a.underline(href="/logout") logout]
         span.user(v-else) github #[a.underline(href="/passport/github") login]
       i.iconfont.icon-left(v-else @click="onBack")
-      a.github-container(href="https://github.com/AnsonKong/FreeBird" target="_blank")
+      a.github-container(href="https://github.com/AnsonKong/FreeBird" target="_blank" rel="noopener")
         i.iconfont.icon-github-fill
         span GitHub
 </template>

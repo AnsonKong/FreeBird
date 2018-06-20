@@ -27,12 +27,13 @@
 
 <style lang="stylus" src="./style/index.styl">
 </style>
-
 <script>
+
 import { EventBus } from './event-bus.js'
 import NavMenu from './component/NavMenu.vue'
-import { detectNotification, unscribe } from './notification-detect'
+import { detectNotification, unscribe } from './notification-detect.js'
 import ClipboardJS from 'clipboard'
+import cssDelay from './util/CSSDelay.js'
 
 export default {
   components: {
@@ -46,6 +47,7 @@ export default {
     } else {
       unscribe()
     }
+    cssDelay.delay('//at.alicdn.com/t/font_701024_ebonzcw1q1b.css')
   },
   computed: {
     user () {
