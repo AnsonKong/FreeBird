@@ -3,7 +3,7 @@
     avatar.my-avatar(avatar-width="40px"  bg-color="#eee" icon-color="#aaa" :round="false" :avatar-url="item.user ? item.user.avatar_url : null")
     div.main-container
       div.info-container
-        span.user {{item.user ? item.user.name : 'annoymous'}}
+        span.user {{item.user ? item.user.name : 'anonymous'}}
         heart(:item="item" api="/api/comment/like")
       div.comment(v-html="input2Html(item.comment)")
 </template>
